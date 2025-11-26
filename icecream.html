@@ -23,7 +23,7 @@
             min-height: 100vh;
             background-color: white;
             overflow: hidden;
-            transform: scale(0.65) translateY(-100px);
+            transform: scale(0.8) translateY(-50px);
             transform-origin: top left;
         }
 
@@ -67,18 +67,14 @@
             overflow: hidden;
             pointer-events: auto;
             cursor: grab;
-            transition: transform 0.1s ease;
             z-index: 10;
+            will-change: transform;
         }
 
         .ice-cream-item.dragging {
             cursor: grabbing;
             z-index: 1000;
-            opacity: 0.8;
-        }
-
-        .ice-cream-item.grouped {
-            pointer-events: none;
+            opacity: 0.9;
         }
 
         .ice-cream-item img {
@@ -267,12 +263,13 @@
             justify-content: center;
             cursor: grab;
             z-index: 10;
+            will-change: transform;
         }
 
         .greencandy-wrapper.dragging {
             cursor: grabbing;
             z-index: 1000;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .greencandy-inner {
@@ -419,12 +416,13 @@
             height: 181px;
             cursor: grab;
             z-index: 10;
+            will-change: transform;
         }
 
         .yellowcandy.dragging {
             cursor: grabbing;
             z-index: 1000;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .yellowcandy img {
@@ -486,36 +484,22 @@
             white-space: nowrap;
         }
 
-        /* Ice cream group */
-        .ice-cream-group {
-            position: absolute;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        .ice-cream-group .ice-cream-item,
-        .ice-cream-group .yellowcandy,
-        .ice-cream-group .greencandy-wrapper {
-            position: absolute;
-            cursor: default;
-        }
-
         /* Responsive adjustments */
         @media (max-width: 1400px) {
             .container {
-                transform: scale(0.55) translateY(-100px);
+                transform: scale(0.7) translateY(-50px);
             }
         }
 
         @media (max-width: 1100px) {
             .container {
-                transform: scale(0.48) translateY(-80px);
+                transform: scale(0.6) translateY(-40px);
             }
         }
 
         @media (max-width: 800px) {
             .container {
-                transform: scale(0.4) translateY(-60px);
+                transform: scale(0.5) translateY(-30px);
             }
         }
     </style>
@@ -650,12 +634,11 @@
     </div>
 
     <script>
-        // Dragging functionality
+        // Smooth dragging functionality
         let draggedElement = null;
         let offsetX = 0;
         let offsetY = 0;
         let isDragging = false;
-        const assembledItems = new Set();
 
         // Get all draggable elements
         const draggableElements = document.querySelectorAll('[data-draggable="true"]');
@@ -665,8 +648,6 @@
         });
 
         function startDrag(e) {
-            if (assembledItems.has(this)) return;
-
             draggedElement = this;
             isDragging = true;
 
@@ -688,11 +669,12 @@
             if (!isDragging || !draggedElement) return;
 
             const containerRect = document.querySelector('.container').getBoundingClientRect();
-            const scale = 0.65; // Match the container scale
+            const scale = 0.8; // Match the container scale
 
             let newX = (e.clientX - containerRect.left - offsetX) / scale;
             let newY = (e.clientY - containerRect.top - offsetY) / scale;
 
+            // Use transform for smoother dragging
             draggedElement.style.left = newX + 'px';
             draggedElement.style.top = newY + 'px';
         }
@@ -700,9 +682,6 @@
         function stopDrag() {
             if (draggedElement) {
                 draggedElement.classList.remove('dragging');
-
-                // Check for snap/assembly with nearby elements
-                checkAssembly(draggedElement);
             }
 
             draggedElement = null;
@@ -712,125 +691,13 @@
             document.removeEventListener('mouseup', stopDrag);
         }
 
-        function checkAssembly(element) {
-            const threshold = 50; // Distance threshold for assembly
-            const rect1 = element.getBoundingClientRect();
-            const centerX1 = rect1.left + rect1.width / 2;
-            const centerY1 = rect1.top + rect1.height / 2;
-
-            draggableElements.forEach(other => {
-                if (other === element || assembledItems.has(other)) return;
-
-                const rect2 = other.getBoundingClientRect();
-                const centerX2 = rect2.left + rect2.width / 2;
-                const centerY2 = rect2.top + rect2.height / 2;
-
-                const distance = Math.sqrt(
-                    Math.pow(centerX2 - centerX1, 2) +
-                    Math.pow(centerY2 - centerY1, 2)
-                );
-
-                if (distance < threshold) {
-                    // Snap elements together
-                    const newLeft = parseFloat(other.style.left || other.offsetLeft);
-                    const newTop = parseFloat(other.style.top || other.offsetTop) - rect1.height;
-                    element.style.left = newLeft + 'px';
-                    element.style.top = newTop + 'px';
-                }
-            });
-        }
-
-        // Button click - create group of assembled items
+        // Button click - simple fun message
         const feedButton = document.getElementById('feedButton');
 
         feedButton.addEventListener('click', function() {
-            // Find all items that are close together (assembled)
-            const groups = findAssembledGroups();
-
-            groups.forEach(group => {
-                if (group.length > 1) {
-                    createGroup(group);
-                }
-            });
+            // Simple click effect - could add animation here
+            console.log('Feed the girl!');
         });
-
-        function findAssembledGroups() {
-            const threshold = 80;
-            const visited = new Set();
-            const groups = [];
-
-            draggableElements.forEach(element => {
-                if (visited.has(element) || assembledItems.has(element)) return;
-
-                const group = [element];
-                visited.add(element);
-
-                const rect1 = element.getBoundingClientRect();
-
-                draggableElements.forEach(other => {
-                    if (visited.has(other) || other === element || assembledItems.has(other)) return;
-
-                    const rect2 = other.getBoundingClientRect();
-
-                    // Check if elements are close
-                    const distance = Math.sqrt(
-                        Math.pow(rect2.left - rect1.left, 2) +
-                        Math.pow(rect2.top - rect1.top, 2)
-                    );
-
-                    if (distance < threshold) {
-                        group.push(other);
-                        visited.add(other);
-                    }
-                });
-
-                if (group.length > 1) {
-                    groups.push(group);
-                }
-            });
-
-            return groups;
-        }
-
-        function createGroup(elements) {
-            // Find the bounding box of all elements
-            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-
-            elements.forEach(el => {
-                const left = parseFloat(el.style.left || el.offsetLeft);
-                const top = parseFloat(el.style.top || el.offsetTop);
-                const right = left + el.offsetWidth;
-                const bottom = top + el.offsetHeight;
-
-                minX = Math.min(minX, left);
-                minY = Math.min(minY, top);
-                maxX = Math.max(maxX, right);
-                maxY = Math.max(maxY, bottom);
-            });
-
-            // Create a group container
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'ice-cream-group';
-            groupDiv.style.left = minX + 'px';
-            groupDiv.style.top = minY + 'px';
-            groupDiv.style.width = (maxX - minX) + 'px';
-            groupDiv.style.height = (maxY - minY) + 'px';
-            groupDiv.style.border = '3px dashed #5eff00';
-            groupDiv.style.borderRadius = '10px';
-            groupDiv.style.pointerEvents = 'none';
-
-            // Mark elements as assembled
-            elements.forEach(el => {
-                assembledItems.add(el);
-                el.classList.add('grouped');
-                el.style.cursor = 'default';
-                el.removeEventListener('mousedown', startDrag);
-            });
-
-            document.querySelector('.container').appendChild(groupDiv);
-
-            console.log(`Created group with ${elements.length} items`);
-        }
     </script>
 </body>
 </html>
