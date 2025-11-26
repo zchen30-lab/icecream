@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ice Cream Fun</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            overflow-x: hidden;
+            background-color: white;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background-color: white;
+            overflow: hidden;
+            transform: scale(0.7);
+            transform-origin: top left;
+        }
+
+        /* Background star pattern */
+        .star-background {
+            position: absolute;
+            left: -527.42px;
+            top: -645.18px;
+            width: 2295.777px;
+            height: 2057.318px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .star-background-inner {
+            transform: rotate(15.778deg);
+        }
+
+        .star-pattern {
+            position: relative;
+            width: 1936.171px;
+            height: 1590.781px;
+        }
+
+        .star-pattern img {
+            position: absolute;
+            bottom: 1.45%;
+            left: 0.36%;
+            right: 0.36%;
+            top: 0;
+            width: 99.28%;
+            height: 98.55%;
+            max-width: none;
+        }
+
+        /* Ice cream elements */
+        .ice-cream-item {
+            position: absolute;
+            overflow: hidden;
+            pointer-events: auto;
+            cursor: grab;
+            transition: transform 0.1s ease;
+            z-index: 10;
+        }
+
+        .ice-cream-item.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.8;
+        }
+
+        .ice-cream-item.grouped {
+            pointer-events: none;
+        }
+
+        .ice-cream-item img {
+            position: absolute;
+            max-width: none;
+            display: block;
+            pointer-events: none;
+        }
+
+        /* Cone */
+        .cone {
+            left: 547px;
+            top: 518px;
+            width: 163px;
+            height: 310px;
+        }
+
+        .cone img {
+            left: -53.68%;
+            top: -7.42%;
+            width: 211.04%;
+            height: 110.97%;
+        }
+
+        /* Short cone */
+        .shortcone {
+            left: 388px;
+            top: 429px;
+            width: 186px;
+            height: 246px;
+        }
+
+        .shortcone img {
+            left: -39.78%;
+            top: -23.58%;
+            width: 184.41%;
+            height: 139.43%;
+        }
+
+        /* Cream */
+        .cream {
+            left: 487px;
+            top: 232px;
+            width: 213px;
+            height: 189px;
+        }
+
+        .cream img {
+            left: -33.98%;
+            top: -44.23%;
+            width: 166.99%;
+            height: 189.01%;
+        }
+
+        /* Mint */
+        .mint {
+            left: 263px;
+            top: 60px;
+            width: 224px;
+            height: 202px;
+        }
+
+        .mint img {
+            left: -17.57%;
+            top: -23.93%;
+            width: 132.82%;
+            height: 147.01%;
+        }
+
+        /* Pink */
+        .pink {
+            left: 194px;
+            top: 378px;
+            width: 215px;
+            height: 217px;
+        }
+
+        .pink img {
+            left: -10.22%;
+            top: -11.59%;
+            width: 125.55%;
+            height: 124.64%;
+        }
+
+        /* Blue */
+        .blue {
+            left: 669px;
+            top: 549px;
+            width: 218px;
+            height: 202px;
+        }
+
+        .blue img {
+            left: -13.6%;
+            top: -18.25%;
+            width: 126.47%;
+            height: 136.51%;
+        }
+
+        /* Rainbow */
+        .rainbow {
+            left: 778px;
+            top: 290px;
+            width: 251px;
+            height: 238px;
+        }
+
+        .rainbow img {
+            left: -21.67%;
+            top: -24.56%;
+            width: 142.5%;
+            height: 150%;
+        }
+
+        /* Girl */
+        .girl {
+            left: 923px;
+            top: 301px;
+            width: 631px;
+            height: 720px;
+            cursor: default !important;
+            pointer-events: none;
+        }
+
+        .girl img {
+            left: -17.91%;
+            top: -10.83%;
+            width: 138.51%;
+            height: 121.39%;
+        }
+
+        /* Cherry */
+        .cherry {
+            left: 715px;
+            top: 86px;
+            width: 245px;
+            height: 228px;
+        }
+
+        .cherry img {
+            left: -5.42%;
+            top: -10.91%;
+            width: 116.61%;
+            height: 125.09%;
+        }
+
+        /* Pink candy */
+        .pinkcandy {
+            left: 568px;
+            top: 77px;
+            width: 138px;
+            height: 84px;
+        }
+
+        .pinkcandy img {
+            left: -12.32%;
+            top: -50.6%;
+            width: 124.64%;
+            height: 204.76%;
+        }
+
+        /* Blue candy */
+        .bluecandy {
+            left: 636px;
+            top: -11px;
+            width: 151px;
+            height: 84px;
+        }
+
+        .bluecandy img {
+            left: -6.62%;
+            top: -47.62%;
+            width: 113.25%;
+            height: 203.57%;
+        }
+
+        /* Green candy */
+        .greencandy-wrapper {
+            position: absolute;
+            left: 121px;
+            top: 144px;
+            width: 157.077px;
+            height: 114.269px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            z-index: 10;
+        }
+
+        .greencandy-wrapper.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.8;
+        }
+
+        .greencandy-inner {
+            transform: rotate(344.75deg);
+        }
+
+        .greencandy {
+            position: relative;
+            width: 141px;
+            height: 80px;
+        }
+
+        .greencandy img {
+            position: absolute;
+            left: -10.99%;
+            top: -55%;
+            width: 121.99%;
+            height: 215%;
+            max-width: none;
+            pointer-events: none;
+        }
+
+        /* Worms */
+        .whiteworm {
+            left: 411px;
+            top: 234px;
+            width: 98px;
+            height: 121px;
+        }
+
+        .whiteworm img {
+            left: -33.67%;
+            top: -21.49%;
+            width: 175.51%;
+            height: 142.15%;
+        }
+
+        .yellowworm {
+            left: 330px;
+            top: 301px;
+            width: 89px;
+            height: 131px;
+        }
+
+        .yellowworm img {
+            left: -49.44%;
+            top: -13.74%;
+            width: 193.26%;
+            height: 131.3%;
+        }
+
+        .blueworm {
+            left: 652px;
+            top: 414px;
+            width: 126px;
+            height: 77px;
+        }
+
+        .blueworm img {
+            left: -17.86%;
+            top: -62.34%;
+            width: 136.51%;
+            height: 223.38%;
+        }
+
+        .greeworm {
+            left: 158px;
+            top: 334px;
+            width: 93px;
+            height: 131px;
+        }
+
+        .greeworm img {
+            left: -37.1%;
+            top: -12.98%;
+            width: 184.95%;
+            height: 131.3%;
+        }
+
+        .pinkworm {
+            left: 587px;
+            top: 166px;
+            width: 147px;
+            height: 68px;
+        }
+
+        .pinkworm img {
+            left: -8.84%;
+            top: -77.94%;
+            width: 117.01%;
+            height: 252.94%;
+        }
+
+        /* Gummy bear */
+        .gummybear {
+            left: 964px;
+            top: 226px;
+            width: 131px;
+            height: 100px;
+        }
+
+        .gummybear img {
+            left: -14.5%;
+            top: -38.5%;
+            width: 131.3%;
+            height: 172%;
+        }
+
+        /* Plastic eyes */
+        .pasticeye {
+            left: 472px;
+            top: 149px;
+            width: 106px;
+            height: 64px;
+        }
+
+        .pasticeye img {
+            left: -11.32%;
+            top: -51.56%;
+            width: 119.81%;
+            height: 198.44%;
+        }
+
+        .plasticeye2 {
+            left: 685px;
+            top: 301px;
+            width: 137px;
+            height: 71px;
+        }
+
+        .plasticeye2 img {
+            left: -8.64%;
+            top: -63.08%;
+            width: 117.78%;
+            height: 227.15%;
+        }
+
+        /* Yellow candy */
+        .yellowcandy {
+            position: absolute;
+            left: 833px;
+            top: 486px;
+            width: 181px;
+            height: 181px;
+            cursor: grab;
+            z-index: 10;
+        }
+
+        .yellowcandy.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.8;
+        }
+
+        .yellowcandy img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 50%;
+            max-width: none;
+            pointer-events: none;
+        }
+
+        /* Button */
+        .button-container {
+            position: absolute;
+            left: 481px;
+            top: 872px;
+        }
+
+        .button-back {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 278px;
+            height: 62px;
+            background-color: #5eff00;
+            border: 2px solid black;
+        }
+
+        .button-front {
+            position: absolute;
+            left: 7px;
+            top: 6px;
+            width: 265px;
+            height: 50px;
+            background-color: #5eff00;
+            border: 2px solid black;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .button-front:hover {
+            transform: translate(2px, 2px);
+        }
+
+        .button-front:active {
+            transform: translate(7px, 6px);
+        }
+
+        .button-text {
+            position: absolute;
+            left: 15px;
+            top: 17px;
+            font-size: 24px;
+            color: black;
+            font-weight: normal;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* Ice cream group */
+        .ice-cream-group {
+            position: absolute;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .ice-cream-group .ice-cream-item,
+        .ice-cream-group .yellowcandy,
+        .ice-cream-group .greencandy-wrapper {
+            position: absolute;
+            cursor: default;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1400px) {
+            .container {
+                transform: scale(0.6);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .container {
+                transform: scale(0.5);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .container {
+                transform: scale(0.4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Background star pattern -->
+        <div class="star-background">
+            <div class="star-background-inner">
+                <div class="star-pattern">
+                    <img src="https://www.figma.com/api/mcp/asset/9f9a2254-3aad-48c5-8185-0acd25c11d4c" alt="">
+                </div>
+            </div>
+        </div>
+
+        <!-- Cone -->
+        <div class="ice-cream-item cone" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/d2a5d4f9-cf1f-484a-b56d-d343cbfda742" alt="">
+        </div>
+
+        <!-- Short cone -->
+        <div class="ice-cream-item shortcone" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/ea71efd7-df21-4884-ad6b-eec70a3220a5" alt="">
+        </div>
+
+        <!-- Cream -->
+        <div class="ice-cream-item cream" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/18e52d65-cede-439a-8e2f-0964f3326b15" alt="">
+        </div>
+
+        <!-- Mint ice cream -->
+        <div class="ice-cream-item mint" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/2c83409d-6e2c-4f43-a9a9-9e3240c793f4" alt="">
+        </div>
+
+        <!-- Pink ice cream -->
+        <div class="ice-cream-item pink" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/f08b959e-f54b-44d2-8fb7-1f9f61399119" alt="">
+        </div>
+
+        <!-- Blue ice cream -->
+        <div class="ice-cream-item blue" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/fa381d1e-5be2-40b6-ac96-90577f4fa1e1" alt="">
+        </div>
+
+        <!-- Rainbow ice cream -->
+        <div class="ice-cream-item rainbow" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/f08907b1-1b4f-4799-aa5e-2c9f9205712a" alt="">
+        </div>
+
+        <!-- Girl with mouth open -->
+        <div class="ice-cream-item girl">
+            <img src="https://www.figma.com/api/mcp/asset/10b41dcb-c743-438b-8e3e-6c7021dc42d3" alt="">
+        </div>
+
+        <!-- Cherry -->
+        <div class="ice-cream-item cherry" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/136e3d47-3e2c-475c-b35d-e22d30875f5b" alt="">
+        </div>
+
+        <!-- Pink candy -->
+        <div class="ice-cream-item pinkcandy" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/3282fa67-5d3b-4154-bf38-fc939ccc903f" alt="">
+        </div>
+
+        <!-- Blue candy -->
+        <div class="ice-cream-item bluecandy" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/8a01e6ad-4851-4e85-b9c1-4c5b3f22ae13" alt="">
+        </div>
+
+        <!-- Green candy (rotated) -->
+        <div class="greencandy-wrapper" data-draggable="true">
+            <div class="greencandy-inner">
+                <div class="greencandy">
+                    <img src="https://www.figma.com/api/mcp/asset/eacf0c93-1272-427b-aa82-e5795ba1173d" alt="">
+                </div>
+            </div>
+        </div>
+
+        <!-- White worm -->
+        <div class="ice-cream-item whiteworm" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/7021aba1-019f-4efb-a28c-aa48fd956fd5" alt="">
+        </div>
+
+        <!-- Yellow worm -->
+        <div class="ice-cream-item yellowworm" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/23e4d419-4785-419f-a16b-bb7a4fe1db1f" alt="">
+        </div>
+
+        <!-- Blue worm -->
+        <div class="ice-cream-item blueworm" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/5e497380-cc8d-4dce-9259-911cc095c9a4" alt="">
+        </div>
+
+        <!-- Green worm -->
+        <div class="ice-cream-item greeworm" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/e82fa536-de78-4f46-9191-586d5aabde1f" alt="">
+        </div>
+
+        <!-- Pink worm -->
+        <div class="ice-cream-item pinkworm" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/2398c064-e1da-43b0-b068-70e6713bffa6" alt="">
+        </div>
+
+        <!-- Gummy bear -->
+        <div class="ice-cream-item gummybear" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/c65e916d-f96e-4584-8ddb-49aeb08a42a2" alt="">
+        </div>
+
+        <!-- Plastic eye 1 -->
+        <div class="ice-cream-item pasticeye" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/7ff2326a-a80b-465d-9c30-9fd5c1021ab5" alt="">
+        </div>
+
+        <!-- Yellow candy -->
+        <div class="yellowcandy" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/57d99494-2aad-4fcd-a842-513de5084f21" alt="">
+        </div>
+
+        <!-- Plastic eye 2 -->
+        <div class="ice-cream-item plasticeye2" data-draggable="true">
+            <img src="https://www.figma.com/api/mcp/asset/0e9ff3cc-64f9-49c4-84e2-5d167149107c" alt="">
+        </div>
+
+        <!-- Button -->
+        <div class="button-container">
+            <div class="button-back"></div>
+            <div class="button-front" id="feedButton">
+                <span class="button-text">OMG JUST FEED HER PLZ</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dragging functionality
+        let draggedElement = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        const assembledItems = new Set();
+
+        // Get all draggable elements
+        const draggableElements = document.querySelectorAll('[data-draggable="true"]');
+
+        draggableElements.forEach(element => {
+            element.addEventListener('mousedown', startDrag);
+        });
+
+        function startDrag(e) {
+            if (assembledItems.has(this)) return;
+
+            draggedElement = this;
+            isDragging = true;
+
+            const rect = draggedElement.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            draggedElement.classList.add('dragging');
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+
+            e.preventDefault();
+        }
+
+        function drag(e) {
+            if (!isDragging || !draggedElement) return;
+
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            const scale = 0.7; // Match the container scale
+
+            let newX = (e.clientX - containerRect.left - offsetX) / scale;
+            let newY = (e.clientY - containerRect.top - offsetY) / scale;
+
+            draggedElement.style.left = newX + 'px';
+            draggedElement.style.top = newY + 'px';
+        }
+
+        function stopDrag() {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+
+                // Check for snap/assembly with nearby elements
+                checkAssembly(draggedElement);
+            }
+
+            draggedElement = null;
+            isDragging = false;
+
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        function checkAssembly(element) {
+            const threshold = 50; // Distance threshold for assembly
+            const rect1 = element.getBoundingClientRect();
+            const centerX1 = rect1.left + rect1.width / 2;
+            const centerY1 = rect1.top + rect1.height / 2;
+
+            draggableElements.forEach(other => {
+                if (other === element || assembledItems.has(other)) return;
+
+                const rect2 = other.getBoundingClientRect();
+                const centerX2 = rect2.left + rect2.width / 2;
+                const centerY2 = rect2.top + rect2.height / 2;
+
+                const distance = Math.sqrt(
+                    Math.pow(centerX2 - centerX1, 2) +
+                    Math.pow(centerY2 - centerY1, 2)
+                );
+
+                if (distance < threshold) {
+                    // Snap elements together
+                    const newLeft = parseFloat(other.style.left || other.offsetLeft);
+                    const newTop = parseFloat(other.style.top || other.offsetTop) - rect1.height;
+                    element.style.left = newLeft + 'px';
+                    element.style.top = newTop + 'px';
+                }
+            });
+        }
+
+        // Button click - create group of assembled items
+        const feedButton = document.getElementById('feedButton');
+
+        feedButton.addEventListener('click', function() {
+            // Find all items that are close together (assembled)
+            const groups = findAssembledGroups();
+
+            groups.forEach(group => {
+                if (group.length > 1) {
+                    createGroup(group);
+                }
+            });
+        });
+
+        function findAssembledGroups() {
+            const threshold = 80;
+            const visited = new Set();
+            const groups = [];
+
+            draggableElements.forEach(element => {
+                if (visited.has(element) || assembledItems.has(element)) return;
+
+                const group = [element];
+                visited.add(element);
+
+                const rect1 = element.getBoundingClientRect();
+
+                draggableElements.forEach(other => {
+                    if (visited.has(other) || other === element || assembledItems.has(other)) return;
+
+                    const rect2 = other.getBoundingClientRect();
+
+                    // Check if elements are close
+                    const distance = Math.sqrt(
+                        Math.pow(rect2.left - rect1.left, 2) +
+                        Math.pow(rect2.top - rect1.top, 2)
+                    );
+
+                    if (distance < threshold) {
+                        group.push(other);
+                        visited.add(other);
+                    }
+                });
+
+                if (group.length > 1) {
+                    groups.push(group);
+                }
+            });
+
+            return groups;
+        }
+
+        function createGroup(elements) {
+            // Find the bounding box of all elements
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+            elements.forEach(el => {
+                const left = parseFloat(el.style.left || el.offsetLeft);
+                const top = parseFloat(el.style.top || el.offsetTop);
+                const right = left + el.offsetWidth;
+                const bottom = top + el.offsetHeight;
+
+                minX = Math.min(minX, left);
+                minY = Math.min(minY, top);
+                maxX = Math.max(maxX, right);
+                maxY = Math.max(maxY, bottom);
+            });
+
+            // Create a group container
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'ice-cream-group';
+            groupDiv.style.left = minX + 'px';
+            groupDiv.style.top = minY + 'px';
+            groupDiv.style.width = (maxX - minX) + 'px';
+            groupDiv.style.height = (maxY - minY) + 'px';
+            groupDiv.style.border = '3px dashed #5eff00';
+            groupDiv.style.borderRadius = '10px';
+            groupDiv.style.pointerEvents = 'none';
+
+            // Mark elements as assembled
+            elements.forEach(el => {
+                assembledItems.add(el);
+                el.classList.add('grouped');
+                el.style.cursor = 'default';
+                el.removeEventListener('mousedown', startDrag);
+            });
+
+            document.querySelector('.container').appendChild(groupDiv);
+
+            console.log(`Created group with ${elements.length} items`);
+        }
+    </script>
+</body>
+</html>
