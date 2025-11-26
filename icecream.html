@@ -645,12 +645,16 @@
 
         // Get all draggable elements
         const draggableElements = document.querySelectorAll('[data-draggable="true"]');
+        const girlElement = document.querySelector('.girl');
+        const eatenItems = new Set();
 
         draggableElements.forEach(element => {
             element.addEventListener('mousedown', startDrag);
         });
 
         function startDrag(e) {
+            if (eatenItems.has(this)) return;
+
             draggedElement = this;
             isDragging = true;
 
@@ -680,11 +684,16 @@
             // Use transform for smoother dragging
             draggedElement.style.left = newX + 'px';
             draggedElement.style.top = newY + 'px';
+
+            // Check if item is in girl's mouth area
+            checkIfEaten();
         }
 
         function stopDrag() {
             if (draggedElement) {
                 draggedElement.classList.remove('dragging');
+                // Final check when dropping
+                checkIfEaten();
             }
 
             draggedElement = null;
@@ -692,6 +701,49 @@
 
             document.removeEventListener('mousemove', drag);
             document.removeEventListener('mouseup', stopDrag);
+        }
+
+        function checkIfEaten() {
+            if (!draggedElement || !girlElement) return;
+
+            const itemRect = draggedElement.getBoundingClientRect();
+            const girlRect = girlElement.getBoundingClientRect();
+
+            // Calculate center of dragged item
+            const itemCenterX = itemRect.left + itemRect.width / 2;
+            const itemCenterY = itemRect.top + itemRect.height / 2;
+
+            // Define girl's mouth area (center region of the girl)
+            const mouthLeft = girlRect.left + girlRect.width * 0.35;
+            const mouthRight = girlRect.left + girlRect.width * 0.65;
+            const mouthTop = girlRect.top + girlRect.height * 0.45;
+            const mouthBottom = girlRect.top + girlRect.height * 0.75;
+
+            // Check if item center is in mouth area
+            if (itemCenterX >= mouthLeft && itemCenterX <= mouthRight &&
+                itemCenterY >= mouthTop && itemCenterY <= mouthBottom) {
+                eatItem(draggedElement);
+            }
+        }
+
+        function eatItem(element) {
+            if (eatenItems.has(element)) return;
+
+            eatenItems.add(element);
+
+            // Animate disappearing
+            element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            element.style.opacity = '0';
+            element.style.transform = 'scale(0.5)';
+
+            // Remove from DOM after animation
+            setTimeout(() => {
+                if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+            }, 300);
+
+            console.log('Yum! Item eaten! 🍦');
         }
 
         // Button click - simple fun message
