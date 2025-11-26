@@ -722,8 +722,49 @@
             // Check if item center is in mouth area
             if (itemCenterX >= mouthLeft && itemCenterX <= mouthRight &&
                 itemCenterY >= mouthTop && itemCenterY <= mouthBottom) {
-                eatItem(draggedElement);
+
+                // If it's a cone or shortcone, eat items on top too
+                if (draggedElement.classList.contains('cone') ||
+                    draggedElement.classList.contains('shortcone')) {
+                    eatConeWithToppings(draggedElement);
+                } else {
+                    eatItem(draggedElement);
+                }
             }
+        }
+
+        function eatConeWithToppings(coneElement) {
+            // Get position of the cone
+            const coneRect = coneElement.getBoundingClientRect();
+            const coneCenterX = coneRect.left + coneRect.width / 2;
+            const coneTop = coneRect.top;
+
+            // Find all items on top of the cone
+            const itemsToEat = [coneElement];
+
+            draggableElements.forEach(element => {
+                if (element === coneElement || eatenItems.has(element)) return;
+
+                const elemRect = element.getBoundingClientRect();
+                const elemCenterX = elemRect.left + elemRect.width / 2;
+                const elemBottom = elemRect.bottom;
+
+                // Check if element is above cone and horizontally aligned
+                const horizontalDistance = Math.abs(elemCenterX - coneCenterX);
+                const isAbove = elemBottom <= coneTop + 100; // Some tolerance
+                const isAligned = horizontalDistance < 150; // Horizontal tolerance
+
+                if (isAbove && isAligned) {
+                    itemsToEat.push(element);
+                }
+            });
+
+            // Eat all items (cone and toppings)
+            itemsToEat.forEach((item, index) => {
+                setTimeout(() => {
+                    eatItem(item);
+                }, index * 50); // Slight delay for visual effect
+            });
         }
 
         function eatItem(element) {
