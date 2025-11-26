@@ -23,7 +23,7 @@
             min-height: 100vh;
             background-color: white;
             overflow: hidden;
-            transform: scale(0.7);
+            transform: scale(0.55) translateY(-150px);
             transform-origin: top left;
         }
 
@@ -503,19 +503,19 @@
         /* Responsive adjustments */
         @media (max-width: 1400px) {
             .container {
-                transform: scale(0.6);
+                transform: scale(0.45) translateY(-150px);
             }
         }
 
         @media (max-width: 1100px) {
             .container {
-                transform: scale(0.5);
+                transform: scale(0.38) translateY(-150px);
             }
         }
 
         @media (max-width: 800px) {
             .container {
-                transform: scale(0.4);
+                transform: scale(0.3) translateY(-150px);
             }
         }
     </style>
@@ -688,7 +688,7 @@
             if (!isDragging || !draggedElement) return;
 
             const containerRect = document.querySelector('.container').getBoundingClientRect();
-            const scale = 0.7; // Match the container scale
+            const scale = 0.55; // Match the container scale
 
             let newX = (e.clientX - containerRect.left - offsetX) / scale;
             let newY = (e.clientY - containerRect.top - offsetY) / scale;
