@@ -634,6 +634,11 @@
                 <span class="button-text">OMG JUST FEED HER PLZ</span>
             </div>
         </div>
+
+        <!-- Audio element for eating sound -->
+        <audio id="eatingSound" preload="auto">
+            <source src="zombies-eating-46440.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
     <script>
@@ -730,6 +735,15 @@
             if (eatenItems.has(element)) return;
 
             eatenItems.add(element);
+
+            // Play eating sound
+            const eatingSound = document.getElementById('eatingSound');
+            if (eatingSound) {
+                eatingSound.currentTime = 0; // Reset to start
+                eatingSound.play().catch(err => {
+                    console.log('Audio play failed:', err);
+                });
+            }
 
             // Animate disappearing
             element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
