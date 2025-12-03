@@ -484,6 +484,88 @@
             white-space: nowrap;
         }
 
+        /* WELL DONE Button */
+        .welldone-container {
+            position: absolute;
+            left: 481px;
+            top: 680px;
+        }
+
+        .welldone-button {
+            width: 278px;
+            height: 62px;
+            background-color: #5eff00;
+            border: 2px solid black;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s ease;
+        }
+
+        .welldone-button:hover {
+            transform: scale(1.05);
+        }
+
+        .welldone-button:active {
+            transform: scale(0.98);
+        }
+
+        .welldone-text {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 28px;
+            color: black;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* RESET Button */
+        .reset-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid black;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s ease;
+            z-index: 1000;
+        }
+
+        .reset-button:hover {
+            transform: scale(1.05);
+        }
+
+        .reset-button:active {
+            transform: scale(0.95);
+        }
+
+        .reset-text {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 18px;
+            color: black;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* Assembled group */
+        .assembled-group {
+            position: absolute;
+            pointer-events: auto;
+            cursor: grab;
+        }
+
+        .assembled-group.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.9;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 1400px) {
             .container {
@@ -634,6 +716,23 @@
                 <span class="button-text">OMG JUST FEED HER PLZ</span>
             </div>
         </div>
+
+        <!-- WELL DONE Button -->
+        <div class="welldone-container">
+            <div class="welldone-button" id="wellDoneButton">
+                <span class="welldone-text">OMG JS FEED HER PLZ</span>
+            </div>
+        </div>
+
+        <!-- RESET Button -->
+        <div class="reset-button" id="resetButton">
+            <span class="reset-text">RESET</span>
+        </div>
+
+        <!-- Audio element for eating sound -->
+        <audio id="eatingSound" preload="auto">
+            <source src="zombies-eating-46440.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
     <script>
@@ -731,6 +830,15 @@
 
             eatenItems.add(element);
 
+            // Play eating sound
+            const eatingSound = document.getElementById('eatingSound');
+            if (eatingSound) {
+                eatingSound.currentTime = 0; // Reset to start
+                eatingSound.play().catch(err => {
+                    console.log('Audio play failed:', err);
+                });
+            }
+
             // Animate disappearing
             element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
             element.style.opacity = '0';
@@ -753,6 +861,231 @@
             // Simple click effect - could add animation here
             console.log('Feed the girl!');
         });
+
+        // WELL DONE Button - Assemble ice cream
+        const wellDoneButton = document.getElementById('wellDoneButton');
+        const assembledGroups = [];
+
+        wellDoneButton.addEventListener('click', function() {
+            assembleIceCream();
+        });
+
+        // RESET Button - Reload page to reset
+        const resetButton = document.getElementById('resetButton');
+        resetButton.addEventListener('click', function() {
+            window.location.reload();
+        });
+
+        function assembleIceCream() {
+            // Find all cone/shortcone elements
+            const cones = Array.from(draggableElements).filter(el =>
+                el.classList.contains('cone') || el.classList.contains('shortcone')
+            );
+
+            cones.forEach(cone => {
+                if (eatenItems.has(cone)) return;
+
+                const itemsOnTop = findItemsOnCone(cone);
+
+                if (itemsOnTop.length > 0) {
+                    createAssembledGroup(cone, itemsOnTop);
+                }
+            });
+        }
+
+        function findItemsOnCone(cone) {
+            const coneRect = cone.getBoundingClientRect();
+            const coneCenterX = coneRect.left + coneRect.width / 2;
+            const coneTop = coneRect.top;
+            const items = [];
+
+            draggableElements.forEach(element => {
+                if (element === cone || eatenItems.has(element)) return;
+                if (element.classList.contains('cone') || element.classList.contains('shortcone')) return;
+
+                const elemRect = element.getBoundingClientRect();
+                const elemCenterX = elemRect.left + elemRect.width / 2;
+                const elemBottom = elemRect.bottom;
+
+                // Check if element is above cone and horizontally aligned
+                const horizontalDistance = Math.abs(elemCenterX - coneCenterX);
+                const isAbove = elemBottom <= coneTop + 150; // Tolerance for stacking
+                const isAligned = horizontalDistance < 100; // Horizontal tolerance
+
+                if (isAbove && isAligned) {
+                    items.push(element);
+                }
+            });
+
+            return items;
+        }
+
+        function createAssembledGroup(cone, items) {
+            const allItems = [cone, ...items];
+
+            // Find bounding box of all items
+            let minLeft = Infinity, minTop = Infinity;
+            let maxRight = -Infinity, maxBottom = -Infinity;
+
+            allItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const containerRect = document.querySelector('.container').getBoundingClientRect();
+
+                const left = (rect.left - containerRect.left) / 0.95;
+                const top = (rect.top - containerRect.top) / 0.95;
+                const right = left + rect.width;
+                const bottom = top + rect.height;
+
+                minLeft = Math.min(minLeft, left);
+                minTop = Math.min(minTop, top);
+                maxRight = Math.max(maxRight, right);
+                maxBottom = Math.max(maxBottom, bottom);
+            });
+
+            // Create group container
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'assembled-group';
+            groupDiv.style.left = minLeft + 'px';
+            groupDiv.style.top = minTop + 'px';
+            groupDiv.style.width = (maxRight - minLeft) + 'px';
+            groupDiv.style.height = (maxBottom - minTop) + 'px';
+            groupDiv.style.zIndex = '10';
+
+            // Move items into the group with relative positioning
+            allItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const containerRect = document.querySelector('.container').getBoundingClientRect();
+
+                const itemLeft = (rect.left - containerRect.left) / 0.95;
+                const itemTop = (rect.top - containerRect.top) / 0.95;
+
+                const relativeLeft = itemLeft - minLeft;
+                const relativeTop = itemTop - minTop;
+
+                item.style.position = 'absolute';
+                item.style.left = relativeLeft + 'px';
+                item.style.top = relativeTop + 'px';
+                item.style.cursor = 'default';
+
+                item.removeEventListener('mousedown', startDrag);
+                eatenItems.add(item);
+
+                groupDiv.appendChild(item);
+            });
+
+            // Add group to container
+            document.querySelector('.container').appendChild(groupDiv);
+            assembledGroups.push(groupDiv);
+
+            // Make group draggable
+            groupDiv.addEventListener('mousedown', startGroupDrag);
+
+            console.log('Ice cream assembled! 🍦');
+        }
+
+        // Drag functionality for assembled groups
+        let draggedGroup = null;
+        let groupOffsetX = 0;
+        let groupOffsetY = 0;
+        let isGroupDragging = false;
+
+        function startGroupDrag(e) {
+            if (eatenItems.has(this)) return;
+
+            draggedGroup = this;
+            isGroupDragging = true;
+
+            const rect = draggedGroup.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+
+            groupOffsetX = e.clientX - rect.left;
+            groupOffsetY = e.clientY - rect.top;
+
+            draggedGroup.classList.add('dragging');
+
+            document.addEventListener('mousemove', dragGroup);
+            document.addEventListener('mouseup', stopGroupDrag);
+
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function dragGroup(e) {
+            if (!isGroupDragging || !draggedGroup) return;
+
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            const scale = 0.95;
+
+            let newX = (e.clientX - containerRect.left - groupOffsetX) / scale;
+            let newY = (e.clientY - containerRect.top - groupOffsetY) / scale;
+
+            draggedGroup.style.left = newX + 'px';
+            draggedGroup.style.top = newY + 'px';
+
+            // Check if group is in girl's mouth area
+            checkIfGroupEaten();
+        }
+
+        function stopGroupDrag() {
+            if (draggedGroup) {
+                draggedGroup.classList.remove('dragging');
+                checkIfGroupEaten();
+            }
+
+            draggedGroup = null;
+            isGroupDragging = false;
+
+            document.removeEventListener('mousemove', dragGroup);
+            document.removeEventListener('mouseup', stopGroupDrag);
+        }
+
+        function checkIfGroupEaten() {
+            if (!draggedGroup || !girlElement) return;
+
+            const groupRect = draggedGroup.getBoundingClientRect();
+            const girlRect = girlElement.getBoundingClientRect();
+
+            const groupCenterX = groupRect.left + groupRect.width / 2;
+            const groupCenterY = groupRect.top + groupRect.height / 2;
+
+            const mouthLeft = girlRect.left + girlRect.width * 0.35;
+            const mouthRight = girlRect.left + girlRect.width * 0.65;
+            const mouthTop = girlRect.top + girlRect.height * 0.45;
+            const mouthBottom = girlRect.top + girlRect.height * 0.75;
+
+            if (groupCenterX >= mouthLeft && groupCenterX <= mouthRight &&
+                groupCenterY >= mouthTop && groupCenterY <= mouthBottom) {
+                eatGroup(draggedGroup);
+            }
+        }
+
+        function eatGroup(group) {
+            if (eatenItems.has(group)) return;
+
+            eatenItems.add(group);
+
+            // Play eating sound
+            const eatingSound = document.getElementById('eatingSound');
+            if (eatingSound) {
+                eatingSound.currentTime = 0;
+                eatingSound.play().catch(err => {
+                    console.log('Audio play failed:', err);
+                });
+            }
+
+            // Animate disappearing
+            group.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            group.style.opacity = '0';
+            group.style.transform = 'scale(0.5)';
+
+            setTimeout(() => {
+                if (group.parentNode) {
+                    group.parentNode.removeChild(group);
+                }
+            }, 300);
+
+            console.log('Yum! Whole ice cream eaten! 🍦🍦🍦');
+        }
     </script>
 </body>
 </html>
