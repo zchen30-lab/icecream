@@ -27,6 +27,26 @@
             transform-origin: center center;
         }
 
+        /* PDF Background Layer */
+        .pdf-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .pdf-background embed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         /* Background star pattern */
         .star-background {
             position: absolute;
@@ -38,6 +58,7 @@
             align-items: center;
             justify-content: center;
             pointer-events: none;
+            z-index: 0;
         }
 
         .star-background-inner {
@@ -598,6 +619,11 @@
                     <img src="https://www.figma.com/api/mcp/asset/9f9a2254-3aad-48c5-8185-0acd25c11d4c" alt="">
                 </div>
             </div>
+        </div>
+
+        <!-- PDF Background Layer -->
+        <div class="pdf-background">
+            <embed src="star1.pdf" type="application/pdf">
         </div>
 
         <!-- Cone -->
