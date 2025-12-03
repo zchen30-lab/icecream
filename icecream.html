@@ -23,6 +23,8 @@
             min-height: 100vh;
             background-color: white;
             overflow: hidden;
+            transform: scale(0.95) translate(-2.5%, 1%);
+            transform-origin: center center;
         }
 
         /* Background star pattern */
@@ -35,6 +37,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: none;
         }
 
         .star-background-inner {
@@ -62,13 +65,23 @@
         .ice-cream-item {
             position: absolute;
             overflow: hidden;
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: grab;
+            z-index: 10;
+            will-change: transform;
+        }
+
+        .ice-cream-item.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.9;
         }
 
         .ice-cream-item img {
             position: absolute;
             max-width: none;
             display: block;
+            pointer-events: none;
         }
 
         /* Cone */
@@ -182,6 +195,8 @@
             top: 301px;
             width: 631px;
             height: 720px;
+            cursor: default !important;
+            pointer-events: none;
         }
 
         .girl img {
@@ -246,6 +261,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: grab;
+            z-index: 10;
+            will-change: transform;
+        }
+
+        .greencandy-wrapper.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.9;
         }
 
         .greencandy-inner {
@@ -265,6 +289,7 @@
             width: 121.99%;
             height: 215%;
             max-width: none;
+            pointer-events: none;
         }
 
         /* Worms */
@@ -389,6 +414,15 @@
             top: 486px;
             width: 181px;
             height: 181px;
+            cursor: grab;
+            z-index: 10;
+            will-change: transform;
+        }
+
+        .yellowcandy.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.9;
         }
 
         .yellowcandy img {
@@ -453,28 +487,22 @@
         /* Responsive adjustments */
         @media (max-width: 1400px) {
             .container {
-                transform: scale(0.8);
-                transform-origin: top left;
-                width: 125%;
-                height: 125%;
+                transform: scale(0.8) translate(-2.5%, 1%);
+                transform-origin: center center;
             }
         }
 
         @media (max-width: 1100px) {
             .container {
-                transform: scale(0.6);
-                transform-origin: top left;
-                width: 166.67%;
-                height: 166.67%;
+                transform: scale(0.7) translate(-2.5%, 1%);
+                transform-origin: center center;
             }
         }
 
         @media (max-width: 800px) {
             .container {
-                transform: scale(0.5);
-                transform-origin: top left;
-                width: 200%;
-                height: 200%;
+                transform: scale(0.6) translate(-2.5%, 1%);
+                transform-origin: center center;
             }
         }
     </style>
@@ -491,37 +519,37 @@
         </div>
 
         <!-- Cone -->
-        <div class="ice-cream-item cone">
+        <div class="ice-cream-item cone" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/d2a5d4f9-cf1f-484a-b56d-d343cbfda742" alt="">
         </div>
 
         <!-- Short cone -->
-        <div class="ice-cream-item shortcone">
+        <div class="ice-cream-item shortcone" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/ea71efd7-df21-4884-ad6b-eec70a3220a5" alt="">
         </div>
 
         <!-- Cream -->
-        <div class="ice-cream-item cream">
+        <div class="ice-cream-item cream" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/18e52d65-cede-439a-8e2f-0964f3326b15" alt="">
         </div>
 
         <!-- Mint ice cream -->
-        <div class="ice-cream-item mint">
+        <div class="ice-cream-item mint" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/2c83409d-6e2c-4f43-a9a9-9e3240c793f4" alt="">
         </div>
 
         <!-- Pink ice cream -->
-        <div class="ice-cream-item pink">
+        <div class="ice-cream-item pink" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/f08b959e-f54b-44d2-8fb7-1f9f61399119" alt="">
         </div>
 
         <!-- Blue ice cream -->
-        <div class="ice-cream-item blue">
+        <div class="ice-cream-item blue" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/fa381d1e-5be2-40b6-ac96-90577f4fa1e1" alt="">
         </div>
 
         <!-- Rainbow ice cream -->
-        <div class="ice-cream-item rainbow">
+        <div class="ice-cream-item rainbow" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/f08907b1-1b4f-4799-aa5e-2c9f9205712a" alt="">
         </div>
 
@@ -531,22 +559,22 @@
         </div>
 
         <!-- Cherry -->
-        <div class="ice-cream-item cherry">
+        <div class="ice-cream-item cherry" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/136e3d47-3e2c-475c-b35d-e22d30875f5b" alt="">
         </div>
 
         <!-- Pink candy -->
-        <div class="ice-cream-item pinkcandy">
+        <div class="ice-cream-item pinkcandy" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/3282fa67-5d3b-4154-bf38-fc939ccc903f" alt="">
         </div>
 
         <!-- Blue candy -->
-        <div class="ice-cream-item bluecandy">
+        <div class="ice-cream-item bluecandy" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/8a01e6ad-4851-4e85-b9c1-4c5b3f22ae13" alt="">
         </div>
 
         <!-- Green candy (rotated) -->
-        <div class="greencandy-wrapper">
+        <div class="greencandy-wrapper" data-draggable="true">
             <div class="greencandy-inner">
                 <div class="greencandy">
                     <img src="https://www.figma.com/api/mcp/asset/eacf0c93-1272-427b-aa82-e5795ba1173d" alt="">
@@ -555,47 +583,47 @@
         </div>
 
         <!-- White worm -->
-        <div class="ice-cream-item whiteworm">
+        <div class="ice-cream-item whiteworm" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/7021aba1-019f-4efb-a28c-aa48fd956fd5" alt="">
         </div>
 
         <!-- Yellow worm -->
-        <div class="ice-cream-item yellowworm">
+        <div class="ice-cream-item yellowworm" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/23e4d419-4785-419f-a16b-bb7a4fe1db1f" alt="">
         </div>
 
         <!-- Blue worm -->
-        <div class="ice-cream-item blueworm">
+        <div class="ice-cream-item blueworm" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/5e497380-cc8d-4dce-9259-911cc095c9a4" alt="">
         </div>
 
         <!-- Green worm -->
-        <div class="ice-cream-item greeworm">
+        <div class="ice-cream-item greeworm" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/e82fa536-de78-4f46-9191-586d5aabde1f" alt="">
         </div>
 
         <!-- Pink worm -->
-        <div class="ice-cream-item pinkworm">
+        <div class="ice-cream-item pinkworm" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/2398c064-e1da-43b0-b068-70e6713bffa6" alt="">
         </div>
 
         <!-- Gummy bear -->
-        <div class="ice-cream-item gummybear">
+        <div class="ice-cream-item gummybear" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/c65e916d-f96e-4584-8ddb-49aeb08a42a2" alt="">
         </div>
 
         <!-- Plastic eye 1 -->
-        <div class="ice-cream-item pasticeye">
+        <div class="ice-cream-item pasticeye" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/7ff2326a-a80b-465d-9c30-9fd5c1021ab5" alt="">
         </div>
 
         <!-- Yellow candy -->
-        <div class="yellowcandy">
+        <div class="yellowcandy" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/57d99494-2aad-4fcd-a842-513de5084f21" alt="">
         </div>
 
         <!-- Plastic eye 2 -->
-        <div class="ice-cream-item plasticeye2">
+        <div class="ice-cream-item plasticeye2" data-draggable="true">
             <img src="https://www.figma.com/api/mcp/asset/0e9ff3cc-64f9-49c4-84e2-5d167149107c" alt="">
         </div>
 
@@ -609,34 +637,121 @@
     </div>
 
     <script>
-        // Button click animation and interaction
-        const feedButton = document.getElementById('feedButton');
-        
-        feedButton.addEventListener('click', function() {
-            // Add a fun animation or interaction here
-            alert('YUM! 🍦 Thanks for feeding her!');
-            
-            // You can add more interactive features here, such as:
-            // - Animating the ice cream elements
-            // - Making items disappear into the mouth
-            // - Adding sound effects
-            // - Creating particle effects
+        // Smooth dragging functionality
+        let draggedElement = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+
+        // Get all draggable elements
+        const draggableElements = document.querySelectorAll('[data-draggable="true"]');
+        const girlElement = document.querySelector('.girl');
+        const eatenItems = new Set();
+
+        draggableElements.forEach(element => {
+            element.addEventListener('mousedown', startDrag);
         });
 
-        // Optional: Add some fun hover effects to ice cream items
-        const iceCreamItems = document.querySelectorAll('.ice-cream-item, .yellowcandy, .greencandy-wrapper');
-        
-        iceCreamItems.forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.1)';
-                this.style.transition = 'transform 0.3s ease';
-                this.style.pointerEvents = 'auto';
-                this.style.cursor = 'pointer';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
+        function startDrag(e) {
+            if (eatenItems.has(this)) return;
+
+            draggedElement = this;
+            isDragging = true;
+
+            const rect = draggedElement.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            draggedElement.classList.add('dragging');
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+
+            e.preventDefault();
+        }
+
+        function drag(e) {
+            if (!isDragging || !draggedElement) return;
+
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            const scale = 0.95; // Match the container scale
+
+            let newX = (e.clientX - containerRect.left - offsetX) / scale;
+            let newY = (e.clientY - containerRect.top - offsetY) / scale;
+
+            // Use transform for smoother dragging
+            draggedElement.style.left = newX + 'px';
+            draggedElement.style.top = newY + 'px';
+
+            // Check if item is in girl's mouth area
+            checkIfEaten();
+        }
+
+        function stopDrag() {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+                // Final check when dropping
+                checkIfEaten();
+            }
+
+            draggedElement = null;
+            isDragging = false;
+
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        function checkIfEaten() {
+            if (!draggedElement || !girlElement) return;
+
+            const itemRect = draggedElement.getBoundingClientRect();
+            const girlRect = girlElement.getBoundingClientRect();
+
+            // Calculate center of dragged item
+            const itemCenterX = itemRect.left + itemRect.width / 2;
+            const itemCenterY = itemRect.top + itemRect.height / 2;
+
+            // Define girl's mouth area (center region of the girl)
+            const mouthLeft = girlRect.left + girlRect.width * 0.35;
+            const mouthRight = girlRect.left + girlRect.width * 0.65;
+            const mouthTop = girlRect.top + girlRect.height * 0.45;
+            const mouthBottom = girlRect.top + girlRect.height * 0.75;
+
+            // Check if item center is in mouth area
+            if (itemCenterX >= mouthLeft && itemCenterX <= mouthRight &&
+                itemCenterY >= mouthTop && itemCenterY <= mouthBottom) {
+                eatItem(draggedElement);
+            }
+        }
+
+        function eatItem(element) {
+            if (eatenItems.has(element)) return;
+
+            eatenItems.add(element);
+
+            // Animate disappearing
+            element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            element.style.opacity = '0';
+            element.style.transform = 'scale(0.5)';
+
+            // Remove from DOM after animation
+            setTimeout(() => {
+                if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+            }, 300);
+
+            console.log('Yum! Item eaten! 🍦');
+        }
+
+        // Button click - simple fun message
+        const feedButton = document.getElementById('feedButton');
+
+        feedButton.addEventListener('click', function() {
+            // Simple click effect - could add animation here
+            console.log('Feed the girl!');
         });
     </script>
 </body>
